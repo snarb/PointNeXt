@@ -1,13 +1,12 @@
 import __init__
 import os, argparse, yaml, numpy as np
 from torch import multiprocessing as mp
-from examples.classification.train import main as train
-from examples.classification.pretrain import main as pretrain
+from examples.regression.train import main as train
 from openpoints.utils import EasyConfig, dist_utils, find_free_port, generate_exp_directory, resume_exp_directory, Wandb
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser('S3DIS scene segmentation training')
+    parser = argparse.ArgumentParser('Plane regression training')
     parser.add_argument('--cfg', type=str, required=True, help='config file')
     parser.add_argument('--profile', action='store_true', default=False, help='set to True to profile speed')
     args, opts = parser.parse_known_args()
@@ -33,7 +32,7 @@ if __name__ == "__main__":
     ]
     opt_list = [] # for checking experiment configs from logging file
     for i, opt in enumerate(opts):
-        if 'rank' not in opt and 'dir' not in opt and 'root' not in opt and 'pretrain' not in opt and 'path' not in opt and 'wandb' not in opt and '/' not in opt:
+        if 'rank' not in opt and 'dir' not in opt and 'root' not in opt and 'path' not in opt and 'wandb' not in opt and '/' not in opt:
             opt_list.append(opt)
     cfg.root_dir = os.path.join(cfg.root_dir, cfg.task_name)
     cfg.opts = '-'.join(opt_list)
@@ -52,10 +51,7 @@ if __name__ == "__main__":
     cfg.cfg_path = cfg_path
     cfg.wandb.name = cfg.run_name
 
-    if cfg.mode == 'pretrain':
-        main = pretrain
-    else:
-        main = train
+    main = train
 
     # multi processing.
     if cfg.mp:
