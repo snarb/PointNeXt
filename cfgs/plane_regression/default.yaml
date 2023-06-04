@@ -3,7 +3,7 @@ num_points: 1024  # number of poins actually used in training and evaluation
 dataset:
   common:
     NAME: PlaneRegression
-    data_dir: 'C:\datasets\plane_regression'
+    data_dir:  '/media/brans/data/datasets/toy/' #'/media/brans/data/datasets/plane_regression'
   train:
     split: train
     num_points: 1024  # in training, use sampled 1024 points for data augmentation.
@@ -14,14 +14,16 @@ dataset:
 feature_keys: pos
 
 datatransforms:
-  train: [PointsToTensor, PointCloudScaleAndTranslate]  # rotation does not help
-  vote: [PointCloudScaleAndTranslate]
+  #train: [PointsToTensor, PointCloudScaleAndTranslate]  # rotation does not help
+  train: [PointsToTensor]
+  #vote: [PointCloudScaleAndTranslate]
+  vote: []
   val: [PointsToTensor]
   kwargs:
     shift: [0.2, 0.2, 0.2]
 batch_size: 32
 dataloader:
-  num_workers: 0 #6
+  num_workers: 6 #6
 
 #um_classes: 40
 # ---------------------------------------------------------------------------- #
@@ -48,7 +50,7 @@ grad_norm_clip: 1
 
 criterion_args:
   NAME: HomogeneousGeodesicLoss
-  alpha: 1.0
+  alpha: 0.33
   eps: 1e-7
 
 # ---------------------------------------------------------------------------- #
@@ -57,6 +59,7 @@ criterion_args:
 log_dir: 'plane_regression'
 print_freq: 10
 val_freq: 1
+#save_freq: 10
 
 # ----------------- Model related
 val_batch_size: 64
@@ -66,3 +69,7 @@ wandb:
   project: PointNeXt-PlaneRegression
 
 seed: null
+
+#----------------- Visualization of predictions
+vis_cnt_start: 10 # Number of meshes to visualize on start
+vis_cnt: 10 # Number of meshes to visualize on each percentile
